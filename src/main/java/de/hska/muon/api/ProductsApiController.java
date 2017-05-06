@@ -1,15 +1,11 @@
 package de.hska.muon.api;
 
-
 import de.hska.muon.model.Product;
 import de.hska.muon.model.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-04T12:49:09.193Z")
 
 @RestController
 public class ProductsApiController {
@@ -21,10 +17,16 @@ public class ProductsApiController {
             method = RequestMethod.GET)
     public ResponseEntity<Iterable<Product>> productsGet(
             @RequestParam(value = "query", required = false) String query,
-            @RequestParam(value = "minPrice", required = false) Double minPrice,
-            @RequestParam(value = "maxPrice", required = false) Double maxPrice) {
+            @RequestParam(value = "minPrice", required = false) Integer minPrice,
+            @RequestParam(value = "maxPrice", required = false) Integer maxPrice) {
         // TODO add query / minPrice / maxPrice
-        Iterable<Product> allPolls = repo.findAll();
+
+        Iterable<Product> allPolls;
+        if (query != null) {
+            allPolls = repo.findProductFilterWithQuery(query, minPrice != null ? minPrice : 0, maxPrice != null ? maxPrice : Integer.MAX_VALUE);
+        } else {
+            allPolls = repo.findProductFilter(minPrice != null ? minPrice : 0, maxPrice != null ? maxPrice : Integer.MAX_VALUE);
+        }
         return new ResponseEntity<>(allPolls, HttpStatus.OK);
     }
 
@@ -35,6 +37,7 @@ public class ProductsApiController {
             @RequestBody Product newProduct,
             @RequestHeader(value = "userId", required = true) Integer userId) {
         // TODO userId
+
         Product ret = repo.save(newProduct);
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
@@ -45,18 +48,28 @@ public class ProductsApiController {
     public ResponseEntity<Void> productsProductIdDelete(
             @PathVariable("productId") Integer productId,
             @RequestHeader(value = "userId", required = true) Integer userId) {
-        // TODO userId // NO detection if productId is valid
-        repo.delete(productId);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        // TODO userId
+
+        Product result = repo.findOne(productId);
+        if (result != null) {
+            repo.delete(productId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/products/{productId}",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    public ResponseEntity<Product> productsProductIdGet(@PathVariable Integer productId) {
-         Product result = repo.findOne(productId);
+    public ResponseEntity<?> productsProductIdGet(@PathVariable Integer productId) {
+        Product result = repo.findOne(productId);
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
