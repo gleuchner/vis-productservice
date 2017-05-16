@@ -1,6 +1,7 @@
 version: '2'
 services:
- product:
-   build: .
-   ports:
-     - "8888:8080"
+  product:
+    build: .
+    ports:
+      - "8080:8080"
+

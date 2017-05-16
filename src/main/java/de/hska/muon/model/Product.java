@@ -22,19 +22,19 @@ public class Product {
     private Integer productId;
 
     @JsonProperty("details")
-    @javax.persistence.Column(name = "details")
+    @Column(name = "details")
     private String details;
 
     @JsonProperty("name")
-    @javax.persistence.Column(name = "name")
+    @Column(name = "name")
     private String name;
 
     @JsonProperty("price")
-    @javax.persistence.Column(name = "price")
+    @Column(name = "price")
     private Integer price;
 
     @JsonProperty("categoryId")
-    @javax.persistence.Column(name = "categoryId")
+    @Column(name = "categoryId")
     private Integer categoryId;
 
     /**

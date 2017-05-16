@@ -19,8 +19,6 @@ public class ProductsApiController {
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "minPrice", required = false) Integer minPrice,
             @RequestParam(value = "maxPrice", required = false) Integer maxPrice) {
-        // TODO add query / minPrice / maxPrice
-
         Iterable<Product> allPolls;
         if (query != null) {
             allPolls = repo.findProductFilterWithQuery(query, minPrice != null ? minPrice : 0, maxPrice != null ? maxPrice : Integer.MAX_VALUE);
