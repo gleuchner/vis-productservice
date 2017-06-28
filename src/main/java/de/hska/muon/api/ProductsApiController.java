@@ -5,6 +5,7 @@ import de.hska.muon.model.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +29,7 @@ public class ProductsApiController {
         return new ResponseEntity<>(allPolls, HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('write')")
     @RequestMapping(value = "/products",
             produces = {"application/json"},
             method = RequestMethod.POST)
@@ -40,6 +42,7 @@ public class ProductsApiController {
         return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
+    @PreAuthorize("#oauth2.hasScope('write')")
     @RequestMapping(value = "/products/{productId}",
             produces = {"application/json"},
             method = RequestMethod.DELETE)
